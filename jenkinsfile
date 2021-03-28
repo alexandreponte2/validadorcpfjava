@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                git url: 'https://github.com/alexandreponte2/validadorcpfjava.git', branch: 'main'
+                sh './mvnw package'
+                echo 'Building..'
+            }
+        }
+        stage('Docker image') {
+            steps {
+                sh "/usr/local/bin/docker build -t alexandre/validadorcpfjavagoku:1.0 -f Dockerfile ."
+                echo 'building docker image..'
+                sh "docker push alexandre/validadorcpfjavagoku:1.0"
+                echo 'pushing docker image..'
+            }
+        }
+        stage('TDD') {
+            steps {
+                sh './mvnw test'
+                echo 'Deploying....'
+            }
+        }
+    }
+}
