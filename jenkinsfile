@@ -14,14 +14,20 @@ pipeline {
             steps {
                 sh "/usr/local/bin/docker build -t alexandre/validadorcpfjavagoku:1.0 -f Dockerfile ."
                 echo 'building docker image..'
-                sh "docker push alexandre/validadorcpfjavagoku:1.0"
-                echo 'pushing docker image..'
             }
         }
         stage('TDD') {
             steps {
                 sh './mvnw test'
-                echo 'Deploying....'
+                echo 'Testing....'
+            }
+        }
+        stage('BDD') {
+            steps {
+                sh 'nohup ./start.sh &'
+                echo ' Starting....'
+                git url: 'https://github.com/alexandreponte2/testeBDDjava.git', branch: 'main'
+                sh './mvnw test'
             }
         }
     }
