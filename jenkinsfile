@@ -12,8 +12,10 @@ pipeline {
         }
         stage('Docker image') {
             steps {
-                sh "/usr/local/bin/docker build -t alexandre/validadorcpfjavagoku:1.0 -f Dockerfile ."
+                sh "/usr/local/bin/docker build -t alexandreponte/validadorcpfjavagoku -f Dockerfile ."
                 echo 'building docker image..'
+                sh "/usr/local/bin/docker push alexandreponte/validadorcpfjavagoku"
+                echo 'Pushing docker image..'
             }
         }
         stage('TDD') {
@@ -26,8 +28,13 @@ pipeline {
             steps {
                 sh 'nohup ./start.sh &'
                 echo ' Starting....'
-                git url: 'https://github.com/alexandreponte2/testeBDDjava.git', branch: 'main'
+                git url: 'https://github.com/alexandreponte2/testeBDDjavamac.git', branch: 'main'
                 sh './mvnw test'
+            }
+        }
+        stage('K8s') {
+            steps {
+                sh '/Users/alexandre.s.ponte/kubectl get nodes -o wide'
             }
         }
     }
