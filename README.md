@@ -1,4 +1,4 @@
-Pacote
+Pacote agora vai
 
 ./mvnw package && java -jar target/validarCpf.jar
 
