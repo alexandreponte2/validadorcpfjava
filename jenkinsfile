@@ -6,7 +6,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Get some code from a GitHub repository
-                git url: 'https://github.com/alexandreponte2/validadorcpfjava.git', branch: 'main'
+                git url: 'https://github.com/heltonscampos/projeto-final-concrete.git', branch: 'main'
                 sh './mvnw package'
                 echo 'Building..'
             }
@@ -31,15 +31,16 @@ pipeline {
                 echo ' Starting....'
             }
         }
-       stage('BDD') {
-            steps {
-                git url: 'https://github.com/alexandreponte2/testeBDDjavamac.git', branch: 'main'
-                sh './mvnw test'
-            }
-       }
+  //      stage('BDD') {
+    //        steps {
+      //          git url: 'https://github.com/alexandreponte2/testeBDDjavamac.git', branch: 'main'
+        //        sh './mvnw test'
+          //  }
+       // }
         stage('K8s-DEV') {
             steps {
                 git url: 'https://github.com/alexandreponte2/javapods.git', branch: 'main'
+                sh '/Users/alexandre.s.ponte/kubectl get nodes -o wide'
                 sh '/Users/alexandre.s.ponte/kubectl apply -f deployment-java-dev.yml'
                 sh '/Users/alexandre.s.ponte/kubectl apply -f nodeport-svc-java-dev.yml'
             }
@@ -47,6 +48,7 @@ pipeline {
         stage('K8s-QA') {
             steps {
                 git url: 'https://github.com/alexandreponte2/javapods.git', branch: 'main'
+                sh '/Users/alexandre.s.ponte/kubectl get nodes -o wide'
                 sh '/Users/alexandre.s.ponte/kubectl apply -f deployment-java-qa.yml'
                 sh '/Users/alexandre.s.ponte/kubectl apply -f nodeport-svc-java-qa.yml'
             }
@@ -54,6 +56,7 @@ pipeline {
         stage('K8s-PROD') {
             steps {
                 git url: 'https://github.com/alexandreponte2/javapods.git', branch: 'main'
+                sh '/Users/alexandre.s.ponte/kubectl get nodes -o wide'
                 sh '/Users/alexandre.s.ponte/kubectl apply -f deployment-java-prod.yml'
                 sh '/Users/alexandre.s.ponte/kubectl apply -f nodeport-svc-java-prod.yml'
             }
