@@ -31,12 +31,12 @@ pipeline {
                 echo ' Starting....'
             }
         }
-  //      stage('BDD') {
-    //        steps {
-      //          git url: 'https://github.com/alexandreponte2/testeBDDjavamac.git', branch: 'main'
-        //        sh './mvnw test'
-          //  }
-       // }
+       stage('BDD') {
+            steps {
+                git url: 'https://github.com/alexandreponte2/testeBDDjavamac.git', branch: 'main'
+                sh './mvnw test'
+            }
+       }
         stage('K8s-DEV') {
             steps {
                 git url: 'https://github.com/alexandreponte2/javapods.git', branch: 'main'
