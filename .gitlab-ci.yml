@@ -4,4 +4,4 @@ stages:
 test:
     stage: test
     script:
-        - echo "Success!"
+        - sh ./test.sh
