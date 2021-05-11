@@ -1,4 +1,5 @@
 Pacote
+teste
 
 ./mvnw package && java -jar target/validarCpf.jar
 
