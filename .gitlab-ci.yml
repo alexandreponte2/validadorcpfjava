@@ -1,7 +1,68 @@
-stages:
-    - test
+image: openjdk
 
-test:
-    stage: test
-    script:
-        - sh ./test.sh
+stages:
+- build
+- tdd
+- build-docker
+- dev
+- qa
+- prod
+
+build:
+  script:
+  - ./mvnw package
+  stage: build
+
+tdd:
+  script:
+  - ./test.sh
+  stage: tdd
+  dependencies:
+  - build
+
+build-docker:
+  image: docker
+
+  services:
+  - docker:dind
+
+  before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+
+  stage: build-docker
+  dependencies:
+  - tdd
+  script:
+  - docker build -t alexandreponte/validador-cpf-java -f Dockerfile .
+  - docker push alexandreponte/validador-cpf-java
+
+dev:
+ image: ruby
+ stage: dev
+ script:
+ - gem install dpl
+ - dpl --provider=heroku --app=dev-concrete --api-key=$HEROKU_PRODUCTION_API_KEY
+ only:
+ - master
+
+qa:
+ image: ruby
+ stage: qa
+ dependencies:
+ - dev
+ script:
+ - gem install dpl
+ - dpl --provider=heroku --app=qa-concrete --api-key=$HEROKU_PRODUCTION_API_KEY
+ only:
+ - master
+
+prod:
+ image: ruby
+ stage: prod
+ dependencies:
+ - qa
+ script:
+ - gem install dpl
+ - dpl --provider=heroku --app=prod-concrete --api-key=$HEROKU_PRODUCTION_API_KEY
+ only:
+ - master
