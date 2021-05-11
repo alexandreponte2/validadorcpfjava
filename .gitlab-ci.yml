@@ -12,8 +12,6 @@ build:
   script:
   - ./mvnw package
   stage: build
-  tags:
-   - runner-ponte
 
 tdd:
   script:
@@ -21,8 +19,6 @@ tdd:
   stage: tdd
   dependencies:
   - build
-  tags:
-   - runner-ponte
 
 build-docker:
   image: docker
